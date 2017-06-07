@@ -62,9 +62,7 @@ EXPOSE ${SS_SERVER_PORT}/tcp ${SS_SERVER_PORT}/udp
 EXPOSE ${KCP_PORT}/udp
 
 # Define Shadowsocks & KCP Environment variables
-ENV SS_CONFIG="-s 0.0.0.0 \
-               -p ${SS_SERVER_PORT} \ 
-               -k secret \
+ENV SS_CONFIG="-k secret \
                -m aes-256-cfb \
                -t 300 \
                --fast-open \
@@ -73,16 +71,19 @@ ENV SS_CONFIG="-s 0.0.0.0 \
                -d 8.8.4.4 \
                -u \
                -f /tmp/ss.pid" \
-KCP_CONFIG="-t 127.0.0.1:${SS_SERVER_PORT} \
-               -l :${KCP_PORT} \ 
-                --key kcptun \ 
-                --mode fast \ 
-                --crypt salsa20 \ 
-                --mtu 1350 \ 
-                --sndwnd 256 \
-                --rcvwnd 1024 \
-                --nocomp \
-                --dscp 46"
+KCP_CONFIG="--key kcptun \ 
+            --mode fast \ 
+            --crypt salsa20 \ 
+            --mtu 1350 \ 
+            --sndwnd 256 \
+            --rcvwnd 1024 \
+            --nocomp \
+            --dscp 46"
 
 # Start Services
-CMD ss-server ${SS_CONFIG} && server_linux_amd64 ${KCP_CONFIG}
+CMD ss-server -s 0.0.0.0 \
+               -p ${SS_SERVER_PORT} \ 
+               ${SS_CONFIG} \
+               && server_linux_amd64 -t 127.0.0.1:${SS_SERVER_PORT} \
+               -l :${KCP_PORT} \
+                ${KCP_CONFIG}
