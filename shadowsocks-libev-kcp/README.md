@@ -20,7 +20,7 @@ docker run --name shadowsocks_kcp -d -P randyzhong/shadowsocks-libev-kcp
        -f /tmp/ss.pid       the file path to store pid
        -t 300               socket timeout in seconds
        -u                   enable udprelay mode
-       -d 8.8.8.8           setup nahttps://github.com/shadowsocks/shadowsocks-libevme servers for internal DNS resolver
+       -d 8.8.8.8           setup name servers for internal DNS resolver
        -d 8.8.4.4           setup name servers for internal DNS resolver
        --fast-open          enable TCP fast open
   
