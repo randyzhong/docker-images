@@ -30,7 +30,7 @@ For details, please go to https://github.com/shadowsocks/shadowsocks-libev
 ```
 server_linux_amd64 
     -t 127.0.0.1:5020     set local shadowsocks server as the target server
-    -l ：5021             kcp server listen address    
+    -l ：5021              kcp server listen address    
     --key kcptun          kcp secret key
    --crypt salsa20        cryption: salsa20
    --mode fast            profiles: fast 
