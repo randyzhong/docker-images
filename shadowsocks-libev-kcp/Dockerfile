@@ -2,7 +2,7 @@
 # VERSION 1.0
 
 # Use Alpine Linux as the base image
-FROM alpine
+FROM alpine:latest
 
 # Maintainer Information
 LABEL maintainer "noreply@randyzhong.me"
@@ -54,36 +54,41 @@ RUN set -ex && \
        /var/cache/apk/*
 
 # Define Shadowsocks and KCP Ports
-ENV SS_SERVER_PORT=5020 \
-KCP_PORT=5021
+ENV SS_SERVER_ADDR=${SS_SERVER_ADDR:-0.0.0.0} \
+SS_SERVER_PORT=${SS_SERVER_PORT:-5020} \
+SS_PASSWORD=${SS_PASSWORD:-secret} \
+SS_METHOD=$(SS_METHOD:-aes-256-cfb} \
+SS_TIMEOUT=${SS_TIMEOUT:-300} \
+SS_DNS_ADDR1=$(SS_DNS_ADDR1:-8.8.8.8} \
+SS_DNS_ADDR2=$(SS_DNS_ADDR1:-8.8.4.4} \
+KCP_PORT=${KCP_PORT:-5021} \
+KCP_KEY=${KCP_KEY:-kcptun} \
+KCP_MODE=${KCP_MODE:-fast} \
+KCP_CRYPT=${KCP_CRYPT:-salsa20} \
+KCP_MTU=${KCP_MTU:-1350} \
+KCP_DSCP=${KCP_DSCP:-46}
+
+USER nobody
 
 # Expose Shadowsocker & KCP port
 EXPOSE ${SS_SERVER_PORT}/tcp ${SS_SERVER_PORT}/udp
 EXPOSE ${KCP_PORT}/udp
 
-# Define Shadowsocks & KCP Environment variables
-ENV SS_CONFIG="-k secret \
-               -m aes-256-cfb \
-               -t 300 \
-               --fast-open \
-               -a nobody \ 
-               -d 8.8.8.8 \
-               -d 8.8.4.4 \
-               -u \
-               -f /tmp/ss.pid" \
-KCP_CONFIG="--key kcptun \ 
-            --mode fast \ 
-            --crypt salsa20 \ 
-            --mtu 1350 \ 
-            --sndwnd 256 \
-            --rcvwnd 1024 \
-            --nocomp \
-            --dscp 46"
-
 # Start Services
-CMD ss-server -s 0.0.0.0 \
-               -p ${SS_SERVER_PORT} \ 
-               ${SS_CONFIG} \
-               && server_linux_amd64 -t 127.0.0.1:${SS_SERVER_PORT} \
-               -l :${KCP_PORT} \
-                ${KCP_CONFIG}
+CMD ss-server -s $SS_SERVER_ADDR \
+              -p $SS_SERVER_PORT \
+              -k $SS_PASSWORD \
+              -m $SS_METHOD \
+              -t $SS_TIMEOUT \
+              --fast-open \
+              -d $SS_DNS_ADDR1 \
+              -d $SS_DNS_ADDR2 \
+              -u \
+               && server_linux_amd64 -t 127.0.0.1:$SS_SERVER_PORT \
+               -l :$KCP_PORT \
+               --key $KCP_KEY \
+               --mode $KCP_MODE \
+               --crypt $KCP_CRYPT \
+               --mtu $KCP_MTU \
+               --dscp $KCP_DSCP \
+               --nocomp
