@@ -8,7 +8,7 @@ FROM alpine:latest
 LABEL maintainer "noreply@randyzhong.me"
 
 # Define Shadowsocks-libev version
-ARG SS_LIBEV_VERSION=3.0.6
+ARG SS_LIBEV_VERSION=3.0.8
 ARG SS_LIBEV_URL=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v${SS_LIBEV_VERSION}/shadowsocks-libev-${SS_LIBEV_VERSION}.tar.gz
 
 # Define KCPTUN version
