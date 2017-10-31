@@ -8,11 +8,11 @@ FROM alpine:latest
 LABEL maintainer "noreply@randyzhong.me"
 
 # Define Shadowsocks-libev version
-ARG SS_LIBEV_VERSION=3.0.8
+ARG SS_LIBEV_VERSION=3.1.0
 ARG SS_LIBEV_URL=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v${SS_LIBEV_VERSION}/shadowsocks-libev-${SS_LIBEV_VERSION}.tar.gz
 
 # Define KCPTUN version
-ARG KCP_VERSION=20170525
+ARG KCP_VERSION=20171021
 ARG KCP_URL=https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz
 
 # Define TimeZone
